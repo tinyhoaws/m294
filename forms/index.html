@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Einkaufsliste</title>
+</head>
+
+<body>
+
+	<h1>Einkaufsliste</h1>
+	<ul id="list">
+	</ul>
+
+	<form id="form">
+		<input type="text" name="addItem" id="input" onchange="">
+		<button type="submit">Add to list</button>
+	</form>
+	<script>
+		// data list as the «source of truth»
+		const data = []
+
+		// install submit handler on form, allows also to send with enter
+		document.querySelector("form").addEventListener("submit", function (event) {
+
+			// prevents the form from reloading the site
+			event.preventDefault()
+
+			// get input element from DOM
+			const input = document.getElementById("input")
+
+			// add text to data list and clear the input field
+			data.push(input.value)
+			input.value = ""
+
+			// update the ui with the new list
+			renderList(data)
+		})
+
+		function renderList(data) {
+			// get existing list and remove all elements inside
+			const list = document.getElementById("list")
+			list.replaceChildren()
+
+			// iterate the data list, text holds value, id holds index
+			data.forEach((text, id) => {
+
+				// create new elements in DOM
+				const newLi = document.createElement("li")
+				newLi.innerText = text
+				const deleteButton = document.createElement("button")
+				deleteButton.innerText = "x"
+
+				// handle click on each delete button
+				deleteButton.onclick = () => {
+
+					// id is the index of THIS list element we're currently creating, splice removes 1 element at the index given
+					data.splice(id, 1)
+
+					// after we change the data, we need to update the ui again
+					renderList(data)
+				}
+
+				// append elements to list
+				newLi.append(deleteButton)
+				list.append(newLi)
+			});
+
+		}
+	</script>
+</body>
+
+</html>
